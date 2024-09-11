@@ -59,6 +59,59 @@ def display_profile(username):
 #display_profile("chess_hesam")
 
 
+def top_games_of_month(username, date):
+    url = f"https://api.chess.com/pub/player/{username}/games/{date}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3 MyApp/1.0 (hesamshafiei7@gmail.com)"
+    }
+
+    response = requests.get(url, headers = headers)
+    data = response.json()
+    games = data.get("games")
+
+    wins = []
+
+    for game in games:
+
+        #if username is playing as white:
+        if game["white"]["username"].lower() == username.lower():
+            #if the result for white is a win:
+            if game["white"]["result"] == "win":
+                 black_rating = game["black"]["rating"]
+                 new_game = {
+                    "game": game,
+                    "opp_rating": black_rating
+                 }
+                 wins.append(new_game)
+
+
+        #if username is playing as black:
+        elif game["black"]["username"].lower() == username.lower():
+            #if the result for black is a win:
+            if game["black"]["result"] == "win":
+                 white_rating = game["white"]["rating"]
+                 new_game = {
+                    "game": game,
+                    "opp_rating": white_rating
+                 }
+                 wins.append(new_game)
+        
+    wins = sorted(wins, key=lambda x: x["opp_rating"], reverse=True)
+
+    top_10_wins = wins[:10]
+    counter = 1
+    for win in top_10_wins:
+        game = win["game"]
+        opp_rating = win["opp_rating"]
+        url = game["url"]
+
+        print(f"{counter}. url: {url}")
+        print(f"opponent rating: {opp_rating}")
+        print()
+        counter += 1
+
+
+top_games_of_month("", "2024/08")
 
 def best_win_of_month(username, date):
     url = f"https://api.chess.com/pub/player/{username}/games/{date}"
@@ -68,6 +121,7 @@ def best_win_of_month(username, date):
 
     response = requests.get(url, headers = headers)
     data = response.json()
+    games = data.get("games")
 
      
 
@@ -75,7 +129,7 @@ def best_win_of_month(username, date):
     best_rating = 99
 
     for game in games:
-        #if username is play as white:
+        #if username is playing as white:
         if game["white"]["username"].lower() == username.lower():
             #if the result for white is a win:
             if game["white"]["result"] == "win":
@@ -104,4 +158,4 @@ def best_win_of_month(username, date):
         print(f"rated: {best_win["rated"]}")
 
 
-best_win_of_month("chess_hesam", "2024/09")
+#best_win_of_month("chess_hesam", "2024/09")
