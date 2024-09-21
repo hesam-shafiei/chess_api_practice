@@ -111,7 +111,7 @@ def top_games_of_month(username, date):
         counter += 1
 
 
-top_games_of_month("", "2024/08")
+top_games_of_month("mrvicious1", "2024/09")
 
 def best_win_of_month(username, date):
     url = f"https://api.chess.com/pub/player/{username}/games/{date}"
