@@ -1,42 +1,52 @@
-import requests
-import json
-import os
+# main.py
 
-def fetch_monthly_data(url, username, date):
+import helper
 
-    folder = "chess_data"
+def top_games_of_month(username, year, month):
+    # Use the fetch_monthly_data function from helper.py
+    data = helper.fetch_monthly_data(username, year, month)
+    games = data.get("games")
 
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    wins = []
 
-    file_path = f"lesson3/{folder}/{username}_{date}.json"
+    for game in games:
+        # If username is playing as white:
+        if game["white"]["username"].lower() == username.lower():
+            # If the result for white is a win:
+            if game["white"]["result"] == "win":
+                black_rating = game["black"]["rating"]
+                new_game = {
+                    "game": game,
+                    "opp_rating": black_rating
+                }
+                wins.append(new_game)
 
-    #if the json file already exists
-    if os.path.exists(file_path):
-        print("loading data from local computer")
+        # If username is playing as black:
+        elif game["black"]["username"].lower() == username.lower():
+            # If the result for black is a win:
+            if game["black"]["result"] == "win":
+                white_rating = game["white"]["rating"]
+                new_game = {
+                    "game": game,
+                    "opp_rating": white_rating
+                }
+                wins.append(new_game)
+        
+    # Sort the wins by opponent's rating in descending order
+    wins = sorted(wins, key=lambda x: x["opp_rating"], reverse=True)
 
-        with open(file_path, "r") as file:
-            data = json.load(file)
+    # Select the top 10 wins
+    top_10_wins = wins[:10]
+    counter = 1
+    for win in top_10_wins:
+        game = win["game"]
+        opp_rating = win["opp_rating"]
+        url = game["url"]
 
-    else:
-        #if it does not exist
-        print("getting data from chess.com api")
+        print(f"{counter}. url: {url}")
+        print(f"opponent rating: {opp_rating}")
+        print()
+        counter += 1
 
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3 MyApp/1.0 (hesamshafiei7@gmail.com)"
-        }
-
-        response = requests.get(url, headers = headers)
-        data = response.json()
-
-        with open(file_path, "w") as file:
-            json.dump(data, file)
-    
-    return data
-
-
-url = "https://api.chess.com/pub/player/chess_hesam/games/2024/08"
-username = "chess_hesam"
-date = "202408"
-
-fetch_monthly_data(url, username, date)
+# Example usage
+top_games_of_month("chess_hesam", 2024, 7)
