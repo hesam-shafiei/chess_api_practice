@@ -17,6 +17,8 @@ def fetch_monthly_data(username, year, month):
             print(f"Loaded data from {filename}")
     else:
         # Build the URL for the API request
+        #https://api.chess.com/pub/player/thepizzaguy99/games/2023/03
+        #https://api.chess.com/pub/player/thepizzaguy99/games/archives
         url = f"https://api.chess.com/pub/player/{username}/games/{year}/{month:02}"
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3 MyApp/1.0 (hesamshafiei7@gmail.com)"
