@@ -95,5 +95,38 @@ def worst_games_of_month(username, year, month):
         print(f"opponent rating: {opp_rating}")
         print()
         counter += 1
-# Example usage
-worst_games_of_month("generalzod", 2024, 8)
+
+
+#make a function called: longest_win_streak
+#it takes: username, year, and month as input
+#prints: How many games was your highest win streak of that month
+#prints: display every game in the win streak
+
+def longest_win_streak(username, year, month):
+
+    data = helper.fetch_monthly_data(username, year, month)
+    games = data.get("games")
+
+    longest_streak = 0
+    current_streak = 0
+    streak_games = []
+    current_streak_games = []
+
+
+    for game in games:
+
+        #if the player is white
+        if game["white"]["username"].lower() == username.lower():
+             #if the player won the game
+            if game["white"]["result"] == "win":
+                # current_streak + 1
+                current_streak += 1
+                # add game to the current_streak_games
+                current_streak_games.append(game)
+            else: #if they lost the game
+                #if current win streak is bigger than longest:
+                
+                    #make the longest streak equal the current streak
+                    #make the streak_games list equal to current_streak games
+                #reset current_streak to 0
+                #reset current_streak_games to an empty list
